@@ -23,6 +23,7 @@ io.on('connection', (client) => {
   usuarios.agregarPersona(client.id, data.nombre, data.sala)
   client.broadcast.to(data.sala).emit('listaPersona', usuarios.getPersonasPorSala(data.sala));
   client.broadcast.to(data.sala).emit('crearMensaje', crearMensaje('Administrador', `${ data.nombre } se unió`));
+  // una vez notificados los usuarios enviamos para renderizar la lista de personas por sala
   callback(usuarios.getPersonasPorSala(data.sala))
 
  })
@@ -31,7 +32,8 @@ io.on('connection', (client) => {
    let persona = usuarios.getPersona(client.id)
    let mensaje = crearMensaje(persona.nombre, data.mensaje)
    client.broadcast.to(persona.sala).emit('crearMensaje', mensaje);
-
+   // una vez notificado todo el mundo devolvemos el mensaje para renderizar
+   callback(mensaje);
  })
 
  // mensaje privado
@@ -56,40 +58,5 @@ io.on('connection', (client) => {
 }); 
 
 
-   /* 
-
-    client.emit('enviarMensaje', {
-        usuario: 'Administrador',
-        mensaje: 'Bienvenido a esta aplicación'
-    });
-
-
-
-    client.on('disconnect', () => {
-        console.log('Usuario desconectado');
-    });
-
-    // Escuchar el cliente
-    client.on('enviarMensaje', (data, callback) => {
-
-        console.log(data);
-
-        client.broadcast.emit('enviarMensaje', data);
-
-
-        // if (mensaje.usuario) {
-        //     callback({
-        //         resp: 'TODO SALIO BIEN!'
-        //     });
-
-        // } else {
-        //     callback({
-        //         resp: 'TODO SALIO MAL!!!!!!!!'
-        //     });
-        // }
-
-
-
-    });
- */
+  
 });
